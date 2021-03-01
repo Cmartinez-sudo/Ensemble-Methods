@@ -1,0 +1,186 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<h1>Lecture : ensemble method basic use</h1>\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#this example mercilessly stolen from Lujing Chen blog on towards data science\n",
+    "\n",
+    "import sklearn"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(sklearn.__version__)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#our raw ingredients \n",
+    "from sklearn.datasets import make_moons\n",
+    "from sklearn.metrics import accuracy_score\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "from sklearn.tree import DecisionTreeClassifier\n",
+    "from sklearn.ensemble import RandomForestClassifier,AdaBoostClassifier,GradientBoostingClassifier\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#binary classification data (0s and 1s)\n",
+    "#- we will create using makemoons which creates a swirl pattern of 2 moons. \n",
+    "# we can control how 'noisy' the shapes are and no of samples\n",
+    "# this problem is suitable for clustering and classification algorithms\n",
+    "\n",
+    "X, y = make_moons(n_samples=5000, noise=.5, random_state=0)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#what if we want to visualise the data created from Moons? \n",
+    "\n",
+    "from matplotlib import pyplot \n",
+    "from pandas import DataFrame "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "df = DataFrame(dict(x=X[:,0], y=X[:,1], label=y))\n",
+    "colors = {0:'blue', 1:'green'}\n",
+    "fig, ax = pyplot.subplots()\n",
+    "grouped = df.groupby('label')\n",
+    "for key, group in grouped:\n",
+    "    group.plot(ax=ax, kind='scatter', x='x', y='y', label=key, color=colors[key])\n",
+    "pyplot.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#train test split \n",
+    "X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=13)\n",
+    "#remember setting a random state ensures repeatability of train test split\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#using a decision tree for baseline modelling \n",
+    "tree = DecisionTreeClassifier()\n",
+    "tree.fit(X_train, y_train)\n",
+    "y_pred =tree.predict(X_test)\n",
+    "accuracy_score(y_test, y_pred)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#applying a random forest model, using default options but will call them out anyway\n",
+    "rdf = RandomForestClassifier(n_estimators=100, max_features=\"auto\",random_state=0)\n",
+    "rdf.fit(X_train, y_train)\n",
+    "y_pred =rdf.predict(X_test)\n",
+    "accuracy_score(y_test, y_pred)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#applying ADA boost, default estimators is 50\n",
+    "ada=AdaBoostClassifier(n_estimators=50)\n",
+    "ada.fit(X_train, y_train)\n",
+    "y_pred =ada.predict(X_test)\n",
+    "accuracy_score(y_test, y_pred)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#applying gradient boosting, default estimators is 100 \n",
+    "gra=GradientBoostingClassifier(n_estimators=100)\n",
+    "gra.fit(X_train, y_train)\n",
+    "y_pred = gra.predict(X_test)\n",
+    "accuracy_score(y_test, y_pred)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<h1>Student Lab challenge</h1>\n",
+    "\n",
+    "**Can you stack the best of these models to reach a more accurate outcome?**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
